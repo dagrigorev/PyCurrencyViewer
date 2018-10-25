@@ -1,12 +1,17 @@
+import os
 from flask import Flask
+from .database import db
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(os.environ['APP_SETTINGS'])
 
+    db.init_app(app)
+    with app.test_request_context():
+        db.create_all()
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
+    import app.firstmodule.controllers as firstmodule
 
+    app.register_blueprint(firstmodule.module)
 
-if __name__ == '__main__':
-    app.run()
+    return app
