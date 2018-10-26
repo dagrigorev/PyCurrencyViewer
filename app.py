@@ -1,17 +1,10 @@
-import os
 from flask import Flask
-from database import db
+from currency.controllers.PlotController import PlotController
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(os.environ['APP_SETTINGS'])
 
-    db.init_app(app)
-    with app.test_request_context():
-        db.create_all()
+app = Flask(__name__)
+plot = PlotController()
 
-    import app.firstmodule.controllers as firstmodule
-
-    app.register_blueprint(firstmodule.module)
-
-    return app
+@app.route("/")
+def Index():
+    return plot.Index()
